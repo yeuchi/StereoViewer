@@ -1,0 +1,159 @@
+<!--
+/* Module:      index - StereoImageViewer
+ *
+ * Description: Traditional auto-stereo viewing & rendering exercise for VR Viewers of a web page content.
+ *              Unlike standard Virtual reality projects, there is no vertexes or 360 degree images here.
+ *              This is a mean to render those old stereo image pair.
+ *
+ * Author:      C.T. Yeung
+ *
+ * Date:        July 9, 2017
+ */
+ -->
+ <!DOCTYPE html>
+<html class="no-js gr__"><!--<![endif]--><head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Stereo view</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" href="default.css">
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    </head>
+    <body data-gr-c-s-loaded="true">
+        <!--[if lt IE 7]>
+            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+        <![endif]-->
+
+        <div class="divBox">
+            
+            <div class="divCanvases">
+                <canvas id="canvasLeft" width="500" height="500"></canvas>
+                <canvas id="canvasRight" width="500" height="500"></canvas>
+            </div>
+        </div>
+        <div class="divTest red"><p class="txtMotion"></p></div>
+        
+        <script src="jquery-3.1.1.js"></script>
+        <script src="Distortion.js"></script>
+        <script src="ErrorLog.js"></script>
+        <script src="Event.js"></script>
+
+        <script>
+            
+            $(document).ready(function() {
+                
+                // instantiate class objects
+                let errorLog = new ErrorLog();
+                
+                /*
+                 * known error occurred
+                 */
+                function OnErrorHandler(msg,     // event type
+                                        event) { // actual event and content
+                    errorLog.push(event.data, event.classFunction, event.lineNumber);
+                }
+                
+                /*
+                 * unexpected error occurred
+                 */
+                window.onerror = function (errorMsg,     // error message
+                                           url,          // url or class::method() detail
+                                           lineNumber) { // line number detail
+                    errorLog.push(errorMsg, url, lineNumber);
+                }
+
+                
+                function OnLoad(e)
+                {
+                    var img = e.currentTarget;
+                    var id = "canvas"+img.id;
+                    var canvas = document.getElementById(id);
+                    var context = canvas.getContext("2d");
+                    //context.drawImage(img, 0,0, img.width, img.height, 0,0, 500, 500);
+
+                    var distortion = new Distortion(canvas, context, img);
+                    distortion.barrel();
+                }
+                
+                // Event listeners
+                $(document).bind(Event.MSG_ERROR, OnErrorHandler);
+                
+                var index = 0;
+               
+                var imageList = [
+                                 {left:"http://www.ctyeung.com/js/StereoView/assets/AndyLeft500.jpg", right:"http://www.ctyeung.com/js/StereoView/assets/AndyRight500.jpg"},
+                                 {left:"http://www.ctyeung.com/js/StereoView/assets/BalloonLeft500.png", right:"http://www.ctyeung.com/js/StereoView/assets/BalloonRight500.png"},
+                                 {left:"http://www.ctyeung.com/js/StereoView/assets/grid500.png", right:"http://www.ctyeung.com/js/StereoView/assets/grid500.png"}
+                                 ]
+                                 
+                /*
+                var imageList = [
+                                 {left:"file:///Users/ctyeung/Desktop/Exercises/VRviewer/assets/AndyLeft500.jpg", right:"file:///Users/ctyeung/Desktop/Exercises/VRviewer/assets/AndyRight500.jpg"},
+                                 {left:"file:///Users/ctyeung/Desktop/Exercises/VRviewer/assets/grid500.png", right:"file:///Users/ctyeung/Desktop/Exercises/VRviewer/assets/grid500.png"}
+                                 ];
+                 */                
+                                 
+                
+                // Load images
+                var imgLeft = new Image();
+                //imgLeft.crossOrigin = "Anonymous";
+                imgLeft.id = "Left";
+                imgLeft.addEventListener('load', OnLoad);
+                imgLeft.src = imageList[index].left;
+                
+                var imgRight = new Image();
+                //imgRight.crossOrigin = "Anonymous";
+                imgRight.id = "Right";
+                imgRight.addEventListener('load', OnLoad);
+                imgRight.src = imageList[index].right;
+                
+                var _x = 0;
+                var _y = 0;
+                function motion(x, y)
+                {
+                       x = Math.round(x);
+                       y = Math.round(y);
+                       
+                       var dX = (_x - x);
+                       var dY = (_y - y);
+                       var dis = Math.sqrt(dX*dX + dY*dY);
+                       
+                       if(dis > 40)
+                       {
+                        $(".txtMotion").text("x:"+x+" y:"+y);
+                        index = (index<2)?index++:0;
+                        imgLeft.src = imageList[index].left;
+                        imgRight.src = imageList[index].right;
+
+                       }
+                       _x = x;
+                       _y = y;
+
+                }
+                
+                if (window.DeviceOrientationEvent)
+                {
+                        window.addEventListener("deviceorientation", function () {
+                            motion(event.beta, event.gamma);
+                        }, true);
+                }
+                else if (window.DeviceMotionEvent)
+                {
+                        window.addEventListener('devicemotion', function () {
+                            motion(event.acceleration.x * 2, event.acceleration.y * 2);
+                        }, true);
+                }
+                else
+                {
+                        window.addEventListener("MozOrientation", function () {
+                            motion(orientation.x * 50, orientation.y * 50);
+                        }, true);
+                }
+                
+            });
+            
+        </script>
+    
+
+</body></html>

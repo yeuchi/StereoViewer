@@ -1,0 +1,50 @@
+  body
+  {
+    font: 10px sans-serif;
+    shape-rendering: crispEdges;
+  }
+
+.percentRemain {
+  padding-left: 3em;
+  padding-top: 1em;
+}
+
+.divBox {
+  width: 100%;
+}
+
+.divCanvases {
+  margin: auto;
+  width: 1010px;
+}
+
+#myProgress {
+    position: relative;
+    width: 100%;
+    height: 30px;
+    background-color: grey;
+}
+#myBar {
+    position: absolute;
+    width: 1%;
+    height: 100%;
+    background-color: green;
+}
+
+#canvasLeft, #canvasRight {
+  border: 1px solid black;
+}
+
+.red {
+  background: #F00;
+}
+
+.blue {
+  background: #00F;
+}
+
+.divTest
+{
+  width: 50px;
+  height: 50px;
+}
