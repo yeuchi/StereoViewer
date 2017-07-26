@@ -60,7 +60,7 @@
                 window.onerror = function (errorMsg,     // error message
                                            url,          // url or class::method() detail
                                            lineNumber) { // line number detail
-                    errorLog.push(errorMsg, url, lineNumber);
+                    //errorLog.push(errorMsg, url, lineNumber);
                 }
 
                 
@@ -82,18 +82,24 @@
                 var index = 0;
                
                 var imageList = [
-                                 {left:"http://www.ctyeung.com/js/StereoView/assets/AndyLeft500.jpg", right:"http://www.ctyeung.com/js/StereoView/assets/AndyRight500.jpg"},
-                                 {left:"http://www.ctyeung.com/js/StereoView/assets/BalloonLeft500.png", right:"http://www.ctyeung.com/js/StereoView/assets/BalloonRight500.png"},
-                                 {left:"http://www.ctyeung.com/js/StereoView/assets/grid500.png", right:"http://www.ctyeung.com/js/StereoView/assets/grid500.png"}
+                                 {left:"http://www.ctyeung.com/js/StereoView/AndyLeft500.jpg",
+                                 right:"http://www.ctyeung.com/js/StereoView/AndyRight500.jpg"},
+                                 {left:"http://www.ctyeung.com/js/StereoView/BalloonLeft500.png",
+                                 right:"http://www.ctyeung.com/js/StereoView/BalloonRight500.png"},
+                                 {left:"http://www.ctyeung.com/js/StereoView/grid500.png",
+                                 right:"http://www.ctyeung.com/js/StereoView/grid500.png"}
                                  ]
                                  
                 /*
                 var imageList = [
-                                 {left:"file:///Users/ctyeung/Desktop/Exercises/VRviewer/assets/AndyLeft500.jpg", right:"file:///Users/ctyeung/Desktop/Exercises/VRviewer/assets/AndyRight500.jpg"},
-                                 {left:"file:///Users/ctyeung/Desktop/Exercises/VRviewer/assets/grid500.png", right:"file:///Users/ctyeung/Desktop/Exercises/VRviewer/assets/grid500.png"}
+                                 {left:"file:///Users/ctyeung/Desktop/Exercises/VRStereoImageViewer/StereoView/AndyLeft500.jpg",
+                                 right:"file:///Users/ctyeung/Desktop/Exercises/VRStereoImageViewer/StereoView/AndyRight500.jpg"},
+                                 {left:"file:///Users/ctyeung/Desktop/Exercises/VRStereoImageViewer/StereoView/BalloonLeft500.png",
+                                 right:"file:///Users/ctyeung/Desktop/Exercises/VRStereoImageViewer/StereoView/BalloonRight500.png"},
+                                 {left:"file:///Users/ctyeung/Desktop/Exercises/VRStereoImageViewer/StereoView/grid500.png",
+                                 right:"file:///Users/ctyeung/Desktop/Exercises/VRStereoImageViewer/StereoView/grid500.png"}
                                  ];
                  */                
-                                 
                 
                 // Load images
                 var imgLeft = new Image();
@@ -119,10 +125,10 @@
                        var dY = (_y - y);
                        var dis = Math.sqrt(dX*dX + dY*dY);
                        
-                       if(dis > 40)
+                       if(dis > 0)
                        {
                         $(".txtMotion").text("x:"+x+" y:"+y);
-                        index = (index<2)?index++:0;
+                        index = (index<2)?index+1:0;
                         imgLeft.src = imageList[index].left;
                         imgRight.src = imageList[index].right;
 
