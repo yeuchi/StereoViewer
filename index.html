@@ -28,8 +28,8 @@
         <div class="divBox">
             
             <div class="divCanvases">
-                <canvas id="canvasLeft" width="500" height="500"></canvas>
-                <canvas id="canvasRight" width="500" height="500"></canvas>
+                <!--<canvas id="canvasLeft" width="500" height="500"></canvas>
+                <canvas id="canvasRight" width="500" height="500"></canvas>-->
             </div>
         </div>
         <div class="divTest red"><p class="txtMotion"></p></div>
@@ -45,6 +45,7 @@
                 
                 // instantiate class objects
                 let errorLog = new ErrorLog();
+                var timeLoaded = null;
                 
                 /*
                  * known error occurred
@@ -67,13 +68,24 @@
                 function OnLoad(e)
                 {
                     var img = e.currentTarget;
-                    var id = "canvas"+img.id;
-                    var canvas = document.getElementById(id);
+                    
+                    var canvas = document.createElement("canvas");
+                    $(canvas).attr("width","500");
+                    $(canvas).attr("height","500");
+                    $(".divCanvases").append(canvas);
+                    
+                    var id = $(img).attr("id");
+                    id = (-1<id.indexOf("Left"))?"canvasLeft":"canvasRight";
+                    $(canvas).attr("id",id);
+                    
+                    //var id = "canvas"+img.id;
+                    //var canvas = document.getElementById(id);
                     var context = canvas.getContext("2d");
                     //context.drawImage(img, 0,0, img.width, img.height, 0,0, 500, 500);
 
                     var distortion = new Distortion(canvas, context, img);
                     distortion.barrel();
+                    timeLoaded = Date.now();
                 }
                 
                 // Event listeners
@@ -99,17 +111,15 @@
                                  {left:"file:///Users/ctyeung/Desktop/Exercises/VRStereoImageViewer/StereoView/grid500.png",
                                  right:"file:///Users/ctyeung/Desktop/Exercises/VRStereoImageViewer/StereoView/grid500.png"}
                                  ];
-                 */                
+                 */           
                 
                 // Load images
                 var imgLeft = new Image();
-                //imgLeft.crossOrigin = "Anonymous";
                 imgLeft.id = "Left";
                 imgLeft.addEventListener('load', OnLoad);
                 imgLeft.src = imageList[index].left;
                 
                 var imgRight = new Image();
-                //imgRight.crossOrigin = "Anonymous";
                 imgRight.id = "Right";
                 imgRight.addEventListener('load', OnLoad);
                 imgRight.src = imageList[index].right;
@@ -125,9 +135,13 @@
                        var dY = (_y - y);
                        var dis = Math.sqrt(dX*dX + dY*dY);
                        
-                       if(dis > 0)
+                       var timeTranspired = Date.now() - timeLoaded;
+                       if(dis > 0  &&
+                          timeTranspired > 2000)
                        {
                         $(".txtMotion").text("x:"+x+" y:"+y);
+                        $(".divCanvases").empty();
+                        
                         index = (index<2)?index+1:0;
                         imgLeft.src = imageList[index].left;
                         imgRight.src = imageList[index].right;
@@ -135,7 +149,6 @@
                        }
                        _x = x;
                        _y = y;
-
                 }
                 
                 if (window.DeviceOrientationEvent)
